@@ -1,4 +1,4 @@
-package sk.romanbris.trackedship;
+package sk.sn0wcr4sh.trackedship;
 
 import org.junit.Test;
 

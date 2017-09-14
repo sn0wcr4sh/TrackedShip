@@ -1,6 +1,9 @@
 <resources>
-    <string name="app_name">TrackedShip</string>
-    <string name="wifi_state">Wi-fi state:</string>
+    <string name="app_name">Tracked Ship</string>
+    <string name="wifi_state">Wi-fi P2P state:</string>
     <string name="wifi_on">On</string>
     <string name="wifi_off">Off</string>
+    <string name="group_info">Group info</string>
+    <string name="unread">-</string>
+    <string name="recreate_group">Recreate group</string>
 </resources>
