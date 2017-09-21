@@ -15,6 +15,7 @@ import java.util.Map;
 
 /**
  * Created by sn0wcr4sh on 9/11/2017.
+ *
  */
 
 
@@ -24,38 +25,22 @@ class P2pManager {
         void onGroupUpdate(WifiP2pGroup group);
     }
 
-    private final String TAG = "TrackedShip";
-
-    private final int SERVER_PORT = 3456;
-
-
     private Listener mListener;
-    private IntentFilter mFilter;
     private WifiP2pManager mManager;
     private WifiP2pManager.Channel mChannel;
 
     public P2pManager(Context context, Listener listener) {
         mListener = listener;
 
-        mFilter = new IntentFilter();
-        mFilter.addAction(WifiP2pManager.WIFI_P2P_STATE_CHANGED_ACTION);
-        mFilter.addAction(WifiP2pManager.WIFI_P2P_PEERS_CHANGED_ACTION);
-        mFilter.addAction(WifiP2pManager.WIFI_P2P_CONNECTION_CHANGED_ACTION);
-        mFilter.addAction(WifiP2pManager.WIFI_P2P_THIS_DEVICE_CHANGED_ACTION);
-
         mManager = (WifiP2pManager) context.getSystemService(Context.WIFI_P2P_SERVICE);
         mChannel = mManager.initialize(context, context.getMainLooper(), null);
-    }
-
-    IntentFilter getFilter() {
-        return mFilter;
     }
 
     void ensureGroup() {
         mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
             @Override
             public void onGroupInfoAvailable(WifiP2pGroup group) {
-                Log.d(TAG, "Current group\n" + group);
+                Log.d(Constants.TAG, "Current group\n" + group);
 
                 if (group != null)
                     removeGroup();
@@ -67,25 +52,25 @@ class P2pManager {
 
     void registerService() {
         Map record = new HashMap();
-        record.put("listen_port", String.valueOf(SERVER_PORT));
+        record.put("listen_port", String.valueOf(TcpServer.PORT));
 
         WifiP2pDnsSdServiceInfo serviceInfo =
                 WifiP2pDnsSdServiceInfo.newInstance("tracked_ship", "tsp._tcp", record);
         mManager.addLocalService(mChannel, serviceInfo, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "Ship service added");
+                Log.d(Constants.TAG, "Ship service added");
             }
 
             @Override
             public void onFailure(int reason) {
-                Log.d(TAG, "Failed to create local service: " + reason);
+                Log.d(Constants.TAG, "Failed to create local service: " + reason);
             }
         });
     }
 
     void readGroup() {
-        Log.d(TAG, "Read group because connection changed");
+        Log.d(Constants.TAG, "Read group because connection changed");
         mManager.requestGroupInfo(mChannel, new WifiP2pManager.GroupInfoListener() {
             @Override
             public void onGroupInfoAvailable(WifiP2pGroup group) {
@@ -98,13 +83,13 @@ class P2pManager {
         mManager.removeGroup(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "Group removed.");
+                Log.d(Constants.TAG, "Group removed.");
                 createGroup();
             }
 
             @Override
             public void onFailure(int reason) {
-                Log.d(TAG, "Remove group failed: " + reason);
+                Log.d(Constants.TAG, "Remove group failed: " + reason);
             }
         });
     }
@@ -113,12 +98,12 @@ class P2pManager {
         mManager.createGroup(mChannel, new WifiP2pManager.ActionListener() {
             @Override
             public void onSuccess() {
-                Log.d(TAG, "Group created.");
+                Log.d(Constants.TAG, "Group created.");
             }
 
             @Override
             public void onFailure(int reason) {
-                Log.d(TAG, "Create group failed: " + reason);
+                Log.d(Constants.TAG, "Create group failed: " + reason);
             }
         });
     }
